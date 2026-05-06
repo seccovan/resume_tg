@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <title>Anna Sokolova — UX/UI Designer</title>
+
+  <!-- Telegram Web App SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --accent: #6C63FF;
+      --accent2: #FF6584;
+      --bg: #0f0f13;
+      --card: #1a1a24;
+      --card2: #22223a;
+      --text: #f0f0f5;
+      --muted: #8888aa;
+      --radius: 16px;
+    }
+
+    /* Если открыто в Telegram — используем цвета темы */
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── HERO ─────────────────────────────────────────────── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 24px 60px;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, #1a0933 0%, #0f1a33 50%, #0f0f13 100%);
+      z-index: 0;
+    }
+
+    /* Анимированные круги фона */
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+      opacity: 0.35;
+      animation: float 8s ease-in-out infinite;
+    }
+    .blob1 { width: 300px; height: 300px; background: #6C63FF; top: -60px; left: -80px; animation-delay: 0s; }
+    .blob2 { width: 250px; height: 250px; background: #FF6584; bottom: 0; right: -60px; animation-delay: -3s; }
+    .blob3 { width: 200px; height: 200px; background: #43d9ad; top: 50%; left: 60%; animation-delay: -5s; }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-30px) scale(1.1); }
+    }
+
+    .hero-content { position: relative; z-index: 1; }
+
+    .avatar-wrap {
+      width: 110px; height: 110px;
+      margin: 0 auto 20px;
+      border-radius: 50%;
+      padding: 3px;
+      background: linear-gradient(135deg, #6C63FF, #FF6584);
+    }
+    .avatar-wrap img {
+      width: 100%; height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--bg);
+    }
+
+    .hero h1 {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 6px;
+      background: linear-gradient(90deg, #fff, #c8c3ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero .role {
+      font-size: 14px;
+      color: #6C63FF;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .hero p {
+      font-size: 15px;
+      color: var(--muted);
+      max-width: 320px;
+      line-height: 1.6;
+      margin: 0 auto 28px;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 28px;
+    }
+    .tag {
+      padding: 5px 14px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid;
+    }
+    .tag-purple { background: rgba(108,99,255,.15); border-color: rgba(108,99,255,.4); color: #a89fff; }
+    .tag-pink   { background: rgba(255,101,132,.15); border-color: rgba(255,101,132,.4); color: #ff9eb5; }
+    .tag-teal   { background: rgba(67,217,173,.15); border-color: rgba(67,217,173,.4);  color: #6ee8c0; }
+
+    .hero-btns {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn {
+      padding: 12px 24px;
+      border-radius: 100px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      transition: all .2s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #6C63FF, #a78bfa);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(108,99,255,.4);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(108,99,255,.5); }
+    .btn-outline {
+      background: rgba(255,255,255,.07);
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,.15);
+    }
+    .btn-outline:hover { background: rgba(255,255,255,.12); }
+
+    /* ── STATS ────────────────────────────────────────────── */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: rgba(255,255,255,.05);
+      border-top: 1px solid rgba(255,255,255,.05);
+      border-bottom: 1px solid rgba(255,255,255,.05);
+    }
+    .stat {
+      background: var(--card);
+      text-align: center;
+      padding: 20px 8px;
+    }
+    .stat-num { font-size: 26px; font-weight: 800; color: #6C63FF; }
+    .stat-lbl { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+    /* ── СЕКЦИИ ───────────────────────────────────────────── */
+    section { padding: 40px 20px; }
+    .section-title {
+      font-size: 20px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+    .section-sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+    .accent-line {
+      width: 40px; height: 3px;
+      background: linear-gradient(90deg, #6C63FF, #FF6584);
+      border-radius: 2px;
+      margin-bottom: 20px;
+    }
+
+    /* ── ABOUT ────────────────────────────────────────────── */
+    .about-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 20px;
+      border: 1px solid rgba(255,255,255,.06);
+    }
+    .about-card p { font-size: 14px; color: var(--muted); line-height: 1.7; margin-bottom: 16px; }
+    .about-card p:last-child { margin-bottom: 0; }
+
+    .skills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 20px;
+    }
+    .skill {
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      background: rgba(108,99,255,.12);
+      color: #a89fff;
+      border: 1px solid rgba(108,99,255,.2);
+    }
+
+    /* ── PORTFOLIO GRID ───────────────────────────────────── */
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .portfolio-card {
+      border-radius: var(--radius);
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,.06);
+      transition: transform .2s;
+    }
+    .portfolio-card:hover { transform: scale(1.02); }
+    .portfolio-card.wide { grid-column: 1 / -1; }
+
+    .portfolio-card img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      display: block;
+    }
+    .portfolio-card.wide img { height: 180px; }
+
+    .portfolio-info {
+      padding: 12px;
+    }
+    .portfolio-info h3 { font-size: 13px; font-weight: 700; margin-bottom: 3px; }
+    .portfolio-info p { font-size: 11px; color: var(--muted); }
+
+    .port-badge {
+      position: absolute;
+      top: 10px; right: 10px;
+      padding: 3px 10px;
+      border-radius: 100px;
+      font-size: 10px;
+      font-weight: 700;
+      background: rgba(0,0,0,.6);
+      backdrop-filter: blur(8px);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,.15);
+    }
+
+    /* ── VIDEO ────────────────────────────────────────────── */
+    .video-section { background: var(--card); }
+
+    .video-wrap {
+      border-radius: var(--radius);
+      overflow: hidden;
+      position: relative;
+      background: #000;
+      border: 1px solid rgba(255,255,255,.08);
+    }
+    .video-wrap video {
+      width: 100%;
+      display: block;
+      max-height: 220px;
+      object-fit: cover;
+    }
+
+    /* Встроенное YouTube видео */
+    .video-frame {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.08);
+      margin-bottom: 16px;
+    }
+    .video-frame iframe {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      border: none;
+    }
+
+    /* Кастомный видеоплеер (заглушка) */
+    .video-thumb {
+      position: relative;
+      border-radius: var(--radius);
+      overflow: hidden;
+      cursor: pointer;
+      margin-bottom: 16px;
+    }
+    .video-thumb img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      display: block;
+      filter: brightness(.7);
+    }
+    .play-btn {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 60px; height: 60px;
+      border-radius: 50%;
+      background: rgba(108,99,255,.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      box-shadow: 0 4px 30px rgba(108,99,255,.6);
+      transition: transform .2s;
+    }
+    .video-thumb:hover .play-btn { transform: translate(-50%, -50%) scale(1.1); }
+    .video-caption {
+      padding: 12px;
+      background: var(--card);
+      border-radius: 0 0 var(--radius) var(--radius);
+    }
+    .video-caption h3 { font-size: 14px; font-weight: 700; }
+    .video-caption p  { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+    /* ── EXPERIENCE ───────────────────────────────────────── */
+    .exp-list { display: flex; flex-direction: column; gap: 12px; }
+    .exp-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 16px;
+      border: 1px solid rgba(255,255,255,.06);
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    .exp-icon {
+      width: 42px; height: 42px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    .exp-icon-1 { background: rgba(108,99,255,.2); }
+    .exp-icon-2 { background: rgba(255,101,132,.2); }
+    .exp-icon-3 { background: rgba(67,217,173,.2); }
+    .exp-body h3 { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+    .exp-body .company { font-size: 12px; color: #6C63FF; font-weight: 600; }
+    .exp-body .period  { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
+    .exp-body p { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+    /* ── TESTIMONIALS ─────────────────────────────────────── */
+    .reviews { display: flex; flex-direction: column; gap: 12px; }
+    .review-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 16px;
+      border: 1px solid rgba(255,255,255,.06);
+    }
+    .review-stars { color: #fbbf24; font-size: 13px; margin-bottom: 8px; }
+    .review-text { font-size: 13px; color: var(--muted); line-height: 1.6; font-style: italic; margin-bottom: 10px; }
+    .review-author { display: flex; align-items: center; gap: 8px; }
+    .review-avatar {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: var(--card2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+    }
+    .review-name { font-size: 13px; font-weight: 700; }
+    .review-role { font-size: 11px; color: var(--muted); }
+
+    /* ── CONTACT ──────────────────────────────────────────── */
+    .contact-section {
+      background: linear-gradient(135deg, rgba(108,99,255,.1), rgba(255,101,132,.1));
+      border-top: 1px solid rgba(255,255,255,.05);
+    }
+    .contact-links {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .contact-link {
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: var(--radius);
+      padding: 14px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text);
+      transition: all .2s;
+      cursor: pointer;
+    }
+    .contact-link:hover { background: var(--card2); transform: translateY(-2px); }
+    .contact-link-icon { font-size: 22px; }
+    .contact-link-label { font-size: 11px; color: var(--muted); }
+    .contact-link-value { font-size: 13px; font-weight: 600; }
+
+    .cta-block {
+      background: linear-gradient(135deg, #6C63FF, #a78bfa);
+      border-radius: var(--radius);
+      padding: 24px;
+      text-align: center;
+    }
+    .cta-block h3 { font-size: 18px; font-weight: 800; margin-bottom: 6px; }
+    .cta-block p  { font-size: 13px; opacity: .8; margin-bottom: 16px; }
+    .btn-white {
+      background: #fff;
+      color: #6C63FF;
+      padding: 12px 28px;
+      border-radius: 100px;
+      font-size: 14px;
+      font-weight: 800;
+      border: none;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .btn-white:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,.3); }
+
+    /* ── FOOTER ───────────────────────────────────────────── */
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 12px;
+      color: var(--muted);
+      border-top: 1px solid rgba(255,255,255,.05);
+    }
+
+    /* ── SCROLL АНИМАЦИЯ ──────────────────────────────────── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity .5s ease, transform .5s ease;
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!--  HERO                                                  -->
+<!-- ══════════════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-bg">
+    <div class="blob blob1"></div>
+    <div class="blob blob2"></div>
+    <div class="blob blob3"></div>
+  </div>
+  <div class="hero-content">
+    <div class="avatar-wrap">
+      <img src="https://images.pexels.com/photos/3756679/pexels-photo-3756679.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=200&w=200" alt="Anna Sokolova"/>
+    </div>
+    <div class="role">UX / UI Designer</div>
+    <h1>Anna Sokolova</h1>
+    <p>Создаю интерфейсы, которыми хочется пользоваться. 5 лет опыта в продуктовом дизайне.</p>
+    <div class="tags">
+      <span class="tag tag-purple">Figma</span>
+      <span class="tag tag-pink">Брендинг</span>
+      <span class="tag tag-teal">Motion</span>
+      <span class="tag tag-purple">User Research</span>
+      <span class="tag tag-pink">Prototyping</span>
+    </div>
+    <div class="hero-btns">
+      <button class="btn btn-primary" onclick="openContact()">💬 Написать</button>
+      <button class="btn btn-outline" onclick="scrollTo('portfolio')">🎨 Портфолио</button>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!--  STATS                                                 -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="stats">
+  <div class="stat">
+    <div class="stat-num">48</div>
+    <div class="stat-lbl">проектов</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">5+</div>
+    <div class="stat-lbl">лет опыта</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">32</div>
+    <div class="stat-lbl">клиентов</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!--  ОБО МНЕ                                               -->
+<!-- ══════════════════════════════════════════════════════ -->
+<section class="fade-up">
+  <div class="section-title">Обо мне</div>
+  <div class="accent-line"></div>
+  <div class="about-card">
+    <p>Привет! Я UX/UI дизайнер с опытом в создании продуктов для стартапов и крупных компаний. Специализируюсь на мобильных приложениях, веб-платформах и дизайн-системах.</p>
+    <p>Верю, что хороший дизайн — это не про красоту, а про решение реальных проблем пользователей. Каждый проект начинаю с исследования, заканчиваю тестированием.</p>
+    <div class="skills">
+      <span class="skill">Figma</span>
+      <span class="skill">Principle</span>
+      <span class="skill">After Effects</span>
+      <span class="skill">Maze</span>
+      <span class="skill">FigJam</span>
+      <span class="skill">Lottie</span>
+      <span class="skill">Framer</span>
+      <span class="skill">Webflow</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!--  ПОРТФОЛИО                                             -->
+<!-- ══════════════════════════════════════════════════════ -->
+<section id="portfolio" class="fade-up">
+  <div class="section-title">Портфолио</div>
+  <div class="section-sub">Избранные работы</div>
+  <div class="accent-line"></div>
+
+  <div class="portfolio-grid">
+
+    <!-- Широкая карточка -->
+    <div class="portfolio-card wide" onclick="openProject('FinPay')">
+      <span class="port-badge">Mobile App</span>
+      <img src="https://images.pexels.com/photos/6289025/pexels-photo-6289025.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=800" alt="FinPay App"/>
+      <div class="portfolio-info">
+        <h3>FinPay — финтех приложение</h3>
+        <p>UX research · Prototyping · Design system</p>
+      </div>
+    </div>
+
+    <!-- Обычные карточки -->
+    <div class="portfolio-card" onclick="openProject('Desk Setup')">
+      <span class="port-badge">Web</span>
+      <img src="https://images.pexels.com/photos/16323586/pexels-photo-16323586.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=300&w=400" alt="Web Design"/>
+      <div class="portfolio-info">
+        <h3>WorkSpace UI</h3>
+        <p>Dashboard · B2B</p>
+      </div>
+    </div>
+
+    <div class="portfolio-card" onclick="openProject('Code Editor')">
+      <span class="port-badge">Branding</span>
+      <img src="https://images.pexels.com/photos/907489/pexels-photo-907489.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=300&w=400" alt="Dev Tool"/>
+      <div class="portfolio-info">
+        <h3>DevTool Rebrand</h3>
+        <p>Identity · Icons</p>
+      </div>
+    </div>
+
+    <div class="portfolio-card wide" onclick="openProject('Abstract')">
+      <span class="port-badge">Art Direction</span>
+      <img src="https://images.pexels.com/photos/29172403/pexels-photo-29172403.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=800" alt="Abstract Design"/>
+      <div class="portfolio-info">
+        <h3>Geometric Brand System</h3>
+        <p>Visual identity · Motion · Print</p>
+      </div>
+    </div>
+
+    <div class="portfolio-card wide" onclick="openProject('Monitor')">
+      <span class="port-badge">UI Kit</span>
+      <img src="https://images.pexels.com/photos/326514/pexels-photo-326514.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=300&w=800" alt="Web Design Monitor"/>
+      <div class="portfolio-info">
+        <h3>E-commerce Platform</h3>
+        <p>Components · Accessibility · Dark mode</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!--  ВИДЕО                                                 -->
+<!-- ══════════════════════════════════════════════════════ -->
+<section class="fade-up video-section">
+  <div class="section-title">Видео-презентация</div>
+  <div class="section-sub">Процесс работы и кейсы</div>
+  <div class="accent-line"></div>
+
+  <!-- YouTube embed (замените VIDEO_ID на свой) -->
+  <div class="video-frame">
+    <iframe
+      src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&modestbranding=1&color=white"
+      title="Portfolio Showreel"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen>
+    </iframe>
+  </div>
+
+  <!-- Второе видео — превью с кнопкой (локальное или ссылка) -->
+  <div class="video-thumb" onclick="openVideo()">
+    <img src="https://images.pexels.com/photos/12732215/pexels-photo-12732215.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=400&w=800" alt="Design Process"/>
+    <div class="play-btn">▶</div>
+    <div class="video-caption">
+      <h3>Design Process — FinPay App</h3>
+      <p>От скетча до релиза · 8 мин</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!--  ОПЫТ                                                  -->
+<!-- ══════════════════════════════════════════════════════ -->
+<section class="fade-up">
+  <div class="section-title">Опыт</div>
+  <div class="accent-line"></div>
+  <div class="exp-list">
+
+    <div class="exp-card">
+      <div class="exp-icon exp-icon-1">🚀</div>
+      <div class="exp-body">
+        <h3>Senior UX/UI Designer</h3>
+        <div class="company">Sber Design</div>
+        <div class="period">2022 — настоящее время</div>
+        <p>Ведущий дизайнер в команде платёжных продуктов. Дизайн-система, UX-аудит, менторинг 3 джунов.</p>
+      </div>
+    </div>
+
+    <div class="exp-card">
+      <div class="exp-icon exp-icon-2">💡</div>
+      <div class="exp-body">
+        <h3>Product Designer</h3>
+        <div class="company">Yandex</div>
+        <div class="period">2020 — 2022</div>
+        <p>Редизайн мобильного приложения Яндекс.Еда. Рост конверсии в заказ на 18%.</p>
+      </div>
+    </div>
+
+    <div class="exp-card">
+      <div class="exp-icon exp-icon-3">🎨</div>
+      <div class="exp-body">
+        <h3>UI Designer</h3>
+        <div class="company">Freelance</div>
+        <div class="period">2019 — 2020</div>
+        <p>20+ проектов для стартапов. Брендинг, лендинги, мобильные приложения.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!--  ОТЗЫВЫ                                                -->
+<!-- ══════════════════════════════════════════════════════ -->
+<section class="fade-up">
+  <div class="section-title">Отзывы</div>
+  <div class="accent-line"></div>
+  <div class="reviews">
+
+    <div class="review-card">
+      <div class="review-stars">★★★★★</div>
+      <div class="review-text">"Анна полностью погрузилась в продукт. Предложила решения, о которых мы не думали. После её работы онбординг стал в 2 раза короче."</div>
+      <div class="review-author">
+        <div class="review-avatar">👨‍💼</div>
+        <div>
+          <div class="review-name">Алексей Петров</div>
+          <div class="review-role">CEO, FinPay</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="review-card">
+      <div class="review-stars">★★★★★</div>
+      <div class="review-text">"Работает быстро, держит дедлайны, умеет объяснить бизнесу зачем каждое дизайн-решение. Очень рекомендую."</div>
+      <div class="review-author">
+        <div class="review-avatar">👩‍💼</div>
+        <div>
+          <div class="review-name">Мария Иванова</div>
+          <div class="review-role">Product Manager, Sber</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!--  КОНТАКТЫ                                              -->
+<!-- ══════════════════════════════════════════════════════ -->
+<section class="contact-section fade-up">
+  <div class="section-title">Контакты</div>
+  <div class="accent-line"></div>
+
+  <div class="contact-links">
+    <div class="contact-link" onclick="openTelegram()">
+      <span class="contact-link-icon">✈️</span>
+      <div>
+        <div class="contact-link-label">Telegram</div>
+        <div class="contact-link-value">@anna_ux</div>
+      </div>
+    </div>
+    <div class="contact-link" onclick="openBehance()">
+      <span class="contact-link-icon">🎨</span>
+      <div>
+        <div class="contact-link-label">Behance</div>
+        <div class="contact-link-value">behance.net</div>
+      </div>
+    </div>
+    <div class="contact-link" onclick="openEmail()">
+      <span class="contact-link-icon">📧</span>
+      <div>
+        <div class="contact-link-label">Email</div>
+        <div class="contact-link-value">anna@design.ru</div>
+      </div>
+    </div>
+    <div class="contact-link" onclick="openLinkedIn()">
+      <span class="contact-link-icon">💼</span>
+      <div>
+        <div class="contact-link-label">LinkedIn</div>
+        <div class="contact-link-value">in/anna-ux</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-block">
+    <h3>Есть проект? 🚀</h3>
+    <p>Открыта к новым задачам. Обсудим за 15 минут.</p>
+    <button class="btn-white" onclick="openContact()">Написать в Telegram</button>
+  </div>
+</section>
+
+<footer>
+  Made with ❤️ · Anna Sokolova · 2024
+</footer>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!--  SCRIPTS                                               -->
+<!-- ══════════════════════════════════════════════════════ -->
+<script>
+  // ── Инициализация Telegram Web App ──────────────────────
+  const tg = window.Telegram?.WebApp;
+
+  if (tg) {
+    tg.ready();
+    tg.expand(); // на всю высоту
+
+    // Подстраиваем цвета под тему Telegram
+    if (tg.colorScheme === 'light') {
+      document.documentElement.style.setProperty('--bg', '#f5f5f5');
+      document.documentElement.style.setProperty('--card', '#ffffff');
+      document.documentElement.style.setProperty('--text', '#1a1a2e');
+      document.documentElement.style.setProperty('--muted', '#666688');
+    }
+
+    // Кнопка "Написать" в нижней панели Telegram
+    tg.MainButton.setText('💬 Написать дизайнеру');
+    tg.MainButton.color = '#6C63FF';
+    tg.MainButton.show();
+    tg.MainButton.onClick(() => {
+      tg.openTelegramLink('https://t.me/anna_ux');
+    });
+  }
+
+  // ── Открытие ссылок через Telegram (если внутри TG) ─────
+  function openTelegram() {
+    if (tg) tg.openTelegramLink('https://t.me/anna_ux');
+    else window.open('https://t.me/anna_ux', '_blank');
+  }
+  function openBehance() {
+    if (tg) tg.openLink('https://behance.net');
+    else window.open('https://behance.net', '_blank');
+  }
+  function openEmail() {
+    window.location.href = 'mailto:anna@design.ru';
+  }
+  function openLinkedIn() {
+    if (tg) tg.openLink('https://linkedin.com');
+    else window.open('https://linkedin.com', '_blank');
+  }
+  function openContact() {
+    if (tg) tg.openTelegramLink('https://t.me/anna_ux');
+    else window.open('https://t.me/anna_ux', '_blank');
+  }
+  function openVideo() {
+    if (tg) tg.openLink('https://youtube.com');
+    else window.open('https://youtube.com', '_blank');
+  }
+  function openProject(name) {
+    // Показать попап или открыть ссылку на проект
+    if (tg) {
+      tg.showAlert('🎨 ' + name + '\n\nОткрыть полный кейс в Behance?');
+    } else {
+      alert('Проект: ' + name);
+    }
+  }
+  function scrollTo(id) {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // ── Scroll анимации ──────────────────────────────────────
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!--
+  КАК ВСТРОИТЬ В TELEGRAM:
+
+  1. Создайте бота через @BotFather → /newbot
+
+  2. Задайте кнопку меню:
+     /setmenubutton → выберите бота → Web App
+     Вставьте URL вашего сайта (HTTPS обязателен!)
+
+  3. ИЛИ отправьте ссылку через кнопку в сообщении (Bot API):
+     {
+       "text": "Открыть портфолио",
+       "web_app": { "url": "https://yoursite.com" }
+     }
+
+  4. Деплой — любой HTTPS хостинг:
+     - GitHub Pages (бесплатно)
+     - Vercel / Netlify (бесплатно)
+     - Любой VPS с nginx + SSL
+
+  Telegram SDK (telegram-web-app.js) даёт доступ к:
+  - tg.initDataUnsafe.user  — данные пользователя
+  - tg.MainButton           — кнопка внизу экрана
+  - tg.openLink()           — открыть внешнюю ссылку
+  - tg.openTelegramLink()   — открыть Telegram-ссылку
+  - tg.showAlert()          — нативный алерт
+  - tg.showConfirm()        — нативный confirm
+  - tg.expand()             — раскрыть на весь экран
+  - tg.close()              — закрыть Mini App
+  - tg.colorScheme          — 'light' | 'dark'
+-->
+</body>
+</html>
