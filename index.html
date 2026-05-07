@@ -612,11 +612,35 @@
 
   <!-- YouTube embed (замените VIDEO_ID на свой) -->
 <div class="video-frame">
-  <a href="https://www.youtube.com/watch?v=JcnTPcVoUS8" target="_blank">
+  <a href="https://www.youtube.com/watch?v=JcnTPcVoUS8" target="_blank" style="position: relative; display: block;">
     <img 
       src="https://img.youtube.com/vi/JcnTPcVoUS8/maxresdefault.jpg"
       alt="Portfolio reel — смотреть на YouTube"
+      style="width: 100%; display: block; border-radius: 8px;"
     >
+    <!-- Кнопка Play -->
+    <div style="
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 68px;
+      height: 48px;
+      background: #FF0000;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    ">
+      <div style="
+        width: 0;
+        height: 0;
+        border-top: 12px solid transparent;
+        border-bottom: 12px solid transparent;
+        border-left: 20px solid white;
+        margin-left: 4px;
+      "></div>
+    </div>
   </a>
 </div>
 
